@@ -81,81 +81,78 @@ app.delete("/users/:id", async (req, res) => {
 
 // Creating the Post Schema
 
-const postSchema = new mongoose.Schema({
-  title:{type:String, required:true},
-  body:{type:String, required:true},
-  userId:{type:mongoose.Schema.Types.ObjectId}
-},
-{
-  timestamps:true,
-  versionKey:false
-});
+const postSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    body: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref:"user" },
+  },
+  {
+    timestamps: true,
+    versionKey: false,
+  }
+);
 
 const Post = new mongoose.model("post", postSchema);
 
 app.get("/posts", async (req, res) => {
-
   try {
-       const post = await Post.find().lean().exec();
+    const post = await Post.find().lean().exec();
 
-       return res.status(200).send(post);
-
-  } 
-  catch (error) {
-     return res.status(500).send({error: error.message});  
+    return res.status(200).send(post);
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
   }
 });
 
 app.post("/posts", async (req, res) => {
-
   try {
-       const post = await Post.create(req.body);
+    const post = await Post.create(req.body);
 
-       return res.status(200).send(post);
-
-  } 
-  catch (error) {
-     return res.status(500).send({error: error.message});  
+    return res.status(200).send(post);
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
   }
 });
 
 app.get("/posts/:id", async (req, res) => {
-
   try {
-       const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id);
 
-       return res.status(200).send(post);
-
-  } 
-  catch (error) {
-     return res.status(500).send({error: error.message});  
+    return res.status(200).send(post);
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
   }
 });
 
 app.patch("/posts/:id", async (req, res) => {
-
   try {
-       const post = await Post.findByIdAndUpdate(req.params.id, req.body, {new:true});
+    const post = await Post.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
 
-       return res.status(200).send(post);
-
-  } 
-  catch (error) {
-     return res.status(500).send({error: error.message});  
+    return res.status(200).send(post);
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
   }
 });
 
 app.delete("/posts/:id", async (req, res) => {
-
   try {
-       const post = await Post.findByIdAndDelete(req.params.id);
+    const post = await Post.findByIdAndDelete(req.params.id);
 
-       return res.status(200).send(post);
-
-  } 
-  catch (error) {
-     return res.status(500).send({error: error.message});  
+    return res.status(200).send(post);
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
   }
+});
+
+// Creating the schema for Comment.
+
+const commentSchema = new mongoose.Schema({
+  body: { type: String, required: true },
+  postId: { type: mongoose.Schema.Types.ObjectId, ref:"post" },
+  userId:{ type: mongoose.Schema.Types.ObjectId, ref:"user" },
 });
 app.listen(5000, async () => {
   try {

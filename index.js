@@ -85,7 +85,7 @@ const postSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     body: { type: String, required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref:"user" },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref:"user", required: true},
   },
   {
     timestamps: true,
@@ -151,8 +151,8 @@ app.delete("/posts/:id", async (req, res) => {
 
 const commentSchema = new mongoose.Schema({
   body: { type: String, required: true },
-  postId: { type: mongoose.Schema.Types.ObjectId, ref:"post" },
-  userId:{ type: mongoose.Schema.Types.ObjectId, ref:"user" },
+  postId: { type: mongoose.Schema.Types.ObjectId, ref:"post", required: true },
+  userId:{ type: mongoose.Schema.Types.ObjectId, ref:"user", required: true },
 });
 app.listen(5000, async () => {
   try {

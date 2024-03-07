@@ -147,6 +147,8 @@ app.delete("/posts/:id", async (req, res) => {
   }
 });
 
+
+
 // Creating the schema for Comment.
 
 const commentSchema = new mongoose.Schema({
@@ -154,6 +156,73 @@ const commentSchema = new mongoose.Schema({
   postId: { type: mongoose.Schema.Types.ObjectId, ref:"post", required: true },
   userId:{ type: mongoose.Schema.Types.ObjectId, ref:"user", required: true },
 });
+
+const Comment = mongoose.model('Comment', commentSchema);
+
+app.get('/comments', async (req, res) => {
+
+  try {
+        const comment = await Comment.find().lean().exec();
+
+        return res.status(200).send({comment:comment});
+  } catch (error) {
+    
+    return res.status(500).send({error:error.message});
+  }
+});
+
+app.post('/comments', async (req, res) => {
+  try {
+    
+    const comment = await Comment.create(req.body);
+
+    return res.status(201).send({comment:comment});
+  } catch (error) {
+    
+    return res.status(500).send({error:error.message})
+  }
+});
+
+app.get("/comments/:id", async (req, res)=>{
+  
+  try {
+    const comment = await Comment.findById(req.params.id).lean().exec();
+
+    return res.status(200).send({comment:comment});
+
+  } catch (error) {
+    
+    return res.status(500).send({error:error.message})
+  }
+});
+
+app.patch("/comments/:id", async (req, res)=>{
+
+  try {
+    
+    const comment = await Comment.findByIdAndUpdate(req.params.id, req.body, {new:true})
+
+    return res.status(200).send({comment:comment});
+
+  } catch (error) {
+    
+    return res.status(500).send({error:error.message});
+  }
+});
+
+app.delete("/comments/:id", async (req,res)=>{
+
+  try {
+     
+    const comment = await Comment.findByIdAndDelete(req.params.id).lean().exec();
+
+    return res.status(200).send({comment: comment});
+  } catch (error) {
+    
+    return res.status(500).send({error: error.message})
+  }
+})
+
 app.listen(5000, async () => {
   try {
     await connect();
